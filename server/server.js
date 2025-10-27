@@ -23,6 +23,9 @@ import errorHandler from "./middleware/error.js";
 import authRoutes from "./routes/auth.js";
 import questionRoutes from "./routes/questions.js";
 import answerRoutes from "./routes/answers.js";
+import sessionRoutes from "./routes/sessions.js";
+import reportRoutes from "./routes/reports.js";
+import chatbotRoutes from "./routes/chatbot.js";
 
 // Get directory name (ES modules)
 const __filename = fileURLToPath(import.meta.url);
@@ -88,6 +91,9 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/answers", answerRoutes);
+app.use("/api/sessions", sessionRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {
