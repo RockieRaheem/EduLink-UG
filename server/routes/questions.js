@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import {
   getQuestions,
   getQuestion,
@@ -6,24 +6,32 @@ import {
   updateQuestion,
   deleteQuestion,
   upvoteQuestion,
-  getUserQuestions
-} from '../controllers/questionController.js';
-import { protect, optionalAuth } from '../middleware/auth.js';
-import { moderateContent, checkStrikes } from '../middleware/moderation.js';
-import upload from '../utils/fileUpload.js';
+  getUserQuestions,
+} from "../controllers/questionController.js";
+import { protect, optionalAuth } from "../middleware/auth.js";
+import { moderateContent, checkStrikes } from "../middleware/moderation.js";
+import upload from "../utils/fileUpload.js";
 
 const router = express.Router();
 
-router.route('/')
+router
+  .route("/")
   .get(optionalAuth, getQuestions)
-  .post(protect, checkStrikes, moderateContent, upload.array('attachments', 3), createQuestion);
+  .post(
+    protect,
+    checkStrikes,
+    moderateContent,
+    upload.array("attachments", 3),
+    createQuestion
+  );
 
-router.route('/:id')
+router
+  .route("/:id")
   .get(optionalAuth, getQuestion)
   .put(protect, moderateContent, updateQuestion)
   .delete(protect, deleteQuestion);
 
-router.put('/:id/upvote', protect, upvoteQuestion);
-router.get('/user/:userId', getUserQuestions);
+router.put("/:id/upvote", protect, upvoteQuestion);
+router.get("/user/:userId", getUserQuestions);
 
 export default router;
