@@ -22,6 +22,7 @@ import errorHandler from "./middleware/error.js";
 // Import routes
 import authRoutes from "./routes/auth.js";
 import questionRoutes from "./routes/questions.js";
+import answerRoutes from "./routes/answers.js";
 
 // Get directory name (ES modules)
 const __filename = fileURLToPath(import.meta.url);
@@ -86,6 +87,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 // Mount routers
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/answers", answerRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {
