@@ -43,7 +43,7 @@ export default function Chatbot() {
         content: response.data.response,
       };
       setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
+    } catch {
       const errorMessage = {
         role: "assistant",
         content: "Sorry, I encountered an error. Please try again.",

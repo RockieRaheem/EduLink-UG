@@ -7,8 +7,6 @@ export default function LiveSession() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [session, setSession] = useState(null);
-  const [participants, setParticipants] = useState([]);
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
@@ -30,11 +28,11 @@ export default function LiveSession() {
 
     // Listen for participants updates
     socketRef.current.on("user-joined", (participant) => {
-      setParticipants((prev) => [...prev, participant]);
+      console.log("User joined:", participant);
     });
 
     socketRef.current.on("user-left", (userId) => {
-      setParticipants((prev) => prev.filter((p) => p.userId !== userId));
+      console.log("User left:", userId);
     });
 
     // Listen for chat messages
@@ -45,15 +43,16 @@ export default function LiveSession() {
     // Get local media stream
     initializeMedia();
 
+    // Store the current video ref for cleanup
+    const currentVideoRef = localVideoRef.current;
+
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
       }
       // Stop all media tracks
-      if (localVideoRef.current && localVideoRef.current.srcObject) {
-        localVideoRef.current.srcObject
-          .getTracks()
-          .forEach((track) => track.stop());
+      if (currentVideoRef && currentVideoRef.srcObject) {
+        currentVideoRef.srcObject.getTracks().forEach((track) => track.stop());
       }
     };
   }, [id, user]);

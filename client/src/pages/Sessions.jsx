@@ -17,7 +17,7 @@ export default function Sessions() {
       setLoading(true);
       const response = await api.sessions.getAll();
       setSessions(response.data);
-    } catch (error) {
+    } catch {
       console.error("Failed to fetch sessions");
     } finally {
       setLoading(false);

@@ -1,24 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 import api from "../api";
 
 export default function QuestionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [question, setQuestion] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [answerContent, setAnswerContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchQuestionAndAnswers();
-  }, [id]);
-
-  const fetchQuestionAndAnswers = async () => {
+  const fetchQuestionAndAnswers = useCallback(async () => {
     try {
       setLoading(true);
       const [questionRes, answersRes] = await Promise.all([
@@ -27,12 +20,16 @@ export default function QuestionDetail() {
       ]);
       setQuestion(questionRes.data);
       setAnswers(answersRes.data);
-    } catch (err) {
-      setError("Failed to load question");
+    } catch {
+      console.error("Failed to load question");
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchQuestionAndAnswers();
+  }, [fetchQuestionAndAnswers]);
 
   const handleUpvote = async () => {
     try {
@@ -41,7 +38,7 @@ export default function QuestionDetail() {
         ...prev,
         upvotes: prev.upvotes + 1,
       }));
-    } catch (err) {
+    } catch {
       console.error("Failed to upvote");
     }
   };
@@ -53,7 +50,7 @@ export default function QuestionDetail() {
         ...prev,
         isBookmarked: !prev.isBookmarked,
       }));
-    } catch (err) {
+    } catch {
       console.error("Failed to bookmark");
     }
   };
@@ -73,7 +70,7 @@ export default function QuestionDetail() {
       });
       setAnswers([response.data, ...answers]);
       setAnswerContent("");
-    } catch (err) {
+    } catch {
       console.error("Failed to submit answer");
     } finally {
       setSubmitting(false);
@@ -90,7 +87,7 @@ export default function QuestionDetail() {
             : answer
         )
       );
-    } catch (err) {
+    } catch {
       console.error("Failed to upvote answer");
     }
   };
