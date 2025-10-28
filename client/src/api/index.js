@@ -39,3 +39,46 @@ export const chatbotAPI = {
 export const reportAPI = {
   create: (data) => api.post("/reports", data),
 };
+
+// Default export with all APIs
+export default {
+  auth: {
+    register: (data) => authAPI.register(data),
+    login: (data) => authAPI.login(data),
+    getMe: () => authAPI.getMe(),
+    updateProfile: (data) => authAPI.updateProfile(data),
+    logout: () => authAPI.logout(),
+  },
+  questions: {
+    getAll: (params) => questionAPI.getAll(params),
+    getById: (id) => questionAPI.getOne(id),
+    getOne: (id) => questionAPI.getOne(id),
+    create: (data) => questionAPI.create(data),
+    update: (id, data) => questionAPI.update(id, data),
+    delete: (id) => questionAPI.delete(id),
+    upvote: (id) => questionAPI.upvote(id),
+    bookmark: (id) => api.put(`/questions/${id}/bookmark`),
+  },
+  answers: {
+    getByQuestion: (questionId) => answerAPI.getByQuestion(questionId),
+    create: (data) => answerAPI.create(data),
+    upvote: (id) => answerAPI.vote(id, 1),
+    vote: (id, vote) => answerAPI.vote(id, vote),
+    verify: (id) => answerAPI.verify(id),
+  },
+  sessions: {
+    getAll: (params) => sessionAPI.getAll(params),
+    getById: (id) => sessionAPI.getOne(id),
+    getOne: (id) => sessionAPI.getOne(id),
+    create: (data) => sessionAPI.create(data),
+    join: (id) => sessionAPI.join(id),
+  },
+  chatbot: {
+    sendMessage: (data) => chatbotAPI.chat(data.message, data.context),
+    chat: (message, context) => chatbotAPI.chat(message, context),
+    getHistory: () => chatbotAPI.getHistory(),
+  },
+  reports: {
+    create: (data) => reportAPI.create(data),
+  },
+};
