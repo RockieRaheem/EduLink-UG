@@ -1,31 +1,38 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
 
 export default function AskQuestion() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    subject: '',
-    level: 'A-Level',
-    image: null
+    title: "",
+    content: "",
+    subject: "",
+    level: "A-Level",
+    image: null,
   });
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const subjects = ['Biology', 'Physics', 'Chemistry', 'Mathematics', 'English', 'History'];
+  const subjects = [
+    "Biology",
+    "Physics",
+    "Chemistry",
+    "Mathematics",
+    "English",
+    "History",
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData(prev => ({ ...prev, image: file }));
+      setFormData((prev) => ({ ...prev, image: file }));
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result);
       reader.readAsDataURL(file);
@@ -34,42 +41,42 @@ export default function AskQuestion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title.trim()) {
-      setError('Please enter a question title');
+      setError("Please enter a question title");
       return;
     }
-    
+
     if (!formData.content.trim()) {
-      setError('Please provide question details');
+      setError("Please provide question details");
       return;
     }
-    
+
     if (!formData.subject) {
-      setError('Please select a subject');
+      setError("Please select a subject");
       return;
     }
 
     try {
       setLoading(true);
-      setError('');
-      
+      setError("");
+
       const submitData = new FormData();
-      submitData.append('title', formData.title);
-      submitData.append('content', formData.content);
-      submitData.append('subject', formData.subject);
-      submitData.append('level', formData.level);
-      
+      submitData.append("title", formData.title);
+      submitData.append("content", formData.content);
+      submitData.append("subject", formData.subject);
+      submitData.append("level", formData.level);
+
       if (formData.image) {
-        submitData.append('image', formData.image);
+        submitData.append("image", formData.image);
       }
 
       const response = await api.questions.create(submitData);
-      
+
       // Navigate to the newly created question
       navigate(`/questions/${response.data._id}`);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to post question');
+      setError(err.response?.data?.message || "Failed to post question");
     } finally {
       setLoading(false);
     }
@@ -89,7 +96,8 @@ export default function AskQuestion() {
             Ask the Community
           </h1>
           <p className="text-text-light-secondary dark:text-text-dark-secondary mt-2 max-w-md">
-            Share your question and let fellow students and tutors help you out. Be clear and provide as much detail as possible.
+            Share your question and let fellow students and tutors help you out.
+            Be clear and provide as much detail as possible.
           </p>
         </div>
 
@@ -104,8 +112,8 @@ export default function AskQuestion() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Question Title */}
             <div className="flex flex-col gap-2">
-              <label 
-                className="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary" 
+              <label
+                className="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary"
                 htmlFor="title"
               >
                 Question Title
@@ -123,8 +131,8 @@ export default function AskQuestion() {
 
             {/* Question Details */}
             <div className="flex flex-col gap-2">
-              <label 
-                className="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary" 
+              <label
+                className="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary"
                 htmlFor="content"
               >
                 Details
@@ -148,16 +156,22 @@ export default function AskQuestion() {
               <div className="relative flex flex-col items-center justify-center w-full p-6 border-2 border-dashed rounded-lg border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary/50 transition-colors">
                 {preview ? (
                   <div className="relative w-full">
-                    <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
                     <button
                       type="button"
                       onClick={() => {
                         setPreview(null);
-                        setFormData(prev => ({ ...prev, image: null }));
+                        setFormData((prev) => ({ ...prev, image: null }));
                       }}
                       className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
                     >
-                      <span className="material-symbols-outlined text-sm">close</span>
+                      <span className="material-symbols-outlined text-sm">
+                        close
+                      </span>
                     </button>
                   </div>
                 ) : (
@@ -166,7 +180,10 @@ export default function AskQuestion() {
                       upload_file
                     </span>
                     <p className="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-                      <span className="font-semibold text-primary">Click to upload</span> or drag and drop
+                      <span className="font-semibold text-primary">
+                        Click to upload
+                      </span>{" "}
+                      or drag and drop
                     </p>
                     <p className="text-xs text-text-light-secondary/70 dark:text-text-dark-secondary/70">
                       SVG, PNG, JPG or GIF (max. 800x400px)
@@ -186,8 +203,8 @@ export default function AskQuestion() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Subject */}
               <div className="flex flex-col gap-2">
-                <label 
-                  className="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary" 
+                <label
+                  className="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary"
                   htmlFor="subject"
                 >
                   Subject
@@ -200,8 +217,10 @@ export default function AskQuestion() {
                   onChange={handleChange}
                 >
                   <option value="">Select a subject</option>
-                  {subjects.map(subject => (
-                    <option key={subject} value={subject}>{subject}</option>
+                  {subjects.map((subject) => (
+                    <option key={subject} value={subject}>
+                      {subject}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -214,22 +233,26 @@ export default function AskQuestion() {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, level: 'O-Level' }))}
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, level: "O-Level" }))
+                    }
                     className={`flex items-center justify-center rounded-lg h-11 px-4 text-sm font-semibold border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-card-light dark:focus:ring-offset-card-dark focus:ring-primary/50 ${
-                      formData.level === 'O-Level'
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary'
+                      formData.level === "O-Level"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary"
                     }`}
                   >
                     O'Level
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, level: 'A-Level' }))}
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, level: "A-Level" }))
+                    }
                     className={`flex items-center justify-center rounded-lg h-11 px-4 text-sm font-semibold border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-card-light dark:focus:ring-offset-card-dark focus:ring-primary/50 ${
-                      formData.level === 'A-Level'
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary'
+                      formData.level === "A-Level"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary"
                     }`}
                   >
                     A'Level
